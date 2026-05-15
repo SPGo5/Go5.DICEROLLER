@@ -1651,7 +1651,7 @@ function gasJsonp(params, onSuccess, onError, timeoutMs) {
 function startGoogleLogin() {
   const el = document.getElementById('login-error-dice');
   if (el) el.style.display = 'none';
-  let redirectUri = window.location.origin + '/Go5.DiceRoller/index.html';
+  let redirectUri = window.location.origin + '/Go5.DICEROLLER/';
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
