@@ -1949,7 +1949,7 @@ async function rollDice() {
           <img src="${imgSrc}" style="width:26px;height:26px;object-fit:contain;">
           <span style="font-family:'Cinzel',serif;font-size:12px;color:var(--sky);">${i + 1}</span>
         </span>
-        <span style="flex:1;font-family:'Corinthia',cursive;font-size:26px;color:#ffffff;font-style:normal;">${diceReps[i]}</span>
+        <span style="flex:1;font-family:'Corinthia',cursive;font-size:26px;color:#00E5FF;font-style:normal;">${diceReps[i]}</span>
         <span style="display:flex;align-items:center;justify-content:flex-end;min-width:80px;">
           ${marker ? `<span style="font-size:18px;margin-right:4px;">${marker}</span>` : ''}
           <span style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:${numColor};text-align:right;">${results[i]}</span>
@@ -2087,7 +2087,7 @@ function copyDiceResultImage() {
       ctx.fillText(r.idx, px(34), y+rowH*0.55);
 
       // Rep name — Beau Rivage matching screen
-      ctx.fillStyle='#ffffff'; ctx.font=px(26)+'px Beau Rivage, cursive'; ctx.textAlign='left';
+      ctx.fillStyle='#00E5FF'; ctx.font=px(26)+'px Corinthia, cursive'; ctx.textAlign='left';
       ctx.fillText(r.rep, px(58), y+rowH*0.68);
 
       // Marker + value — Cormorant Garamond matching screen
