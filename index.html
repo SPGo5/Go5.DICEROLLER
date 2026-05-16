@@ -1740,7 +1740,20 @@ function setHomeState() {
 }
 
 // ── Profile corner ──
-// updateProfileCorner — from spgo-core.js
+const PROFILE_PIC_BASE = 'https://raw.githubusercontent.com/SPGo5/Go5/main/Profile%20Pix/';
+function updateProfileCorner() {
+  const corner = document.getElementById('profile-corner');
+  const img = document.getElementById('profile-corner-img');
+  const code = document.getElementById('profile-corner-code');
+  if (!corner) return;
+  if (!currentUser) { corner.style.display = 'none'; return; }
+  corner.style.display = 'flex';
+  if (img) {
+    img.src = PROFILE_PIC_BASE + encodeURIComponent(currentUser) + '-Profile-Pic-R.png';
+    img.style.display = 'block';
+  }
+  if (code) code.textContent = currentUser;
+}
 
 // ── Logout ──
 function doLogout() {
