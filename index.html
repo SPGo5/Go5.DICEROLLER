@@ -1581,17 +1581,10 @@ html, body {
   </div>
 </div>
 
+<script src="https://spgo5.github.io/Go5.SHARED/spgo-core.js"></script>
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzA4RwYNLcv60HWAHOh2gQgeCfuOWAb0kyqP7BaiujKI5hylDQKEc4Cu6QtTs77PA7FnQ/exec';
-const GOOGLE_CLIENT_ID = '427989206862-svhf1cote22nhdhkq68ff14446upp2m4.apps.googleusercontent.com';
-
-let currentUser = null;
-let currentUserName = 'Guest';
-let currentFsSubscriber = false;
-let currentHasPortal = false;
-let currentHasBara = false;
-let currentTier = 0;
-let isGuest = false;
+// GAS_URL, GOOGLE_CLIENT_ID, currentUser, currentUserName, currentFsSubscriber,
+// currentHasPortal, currentHasBara, currentTier, isGuest — all from spgo-core.js
 
 // ── Screen navigation ──
 function goTo(screenId) {
@@ -1740,21 +1733,6 @@ function setHomeState() {
 }
 
 // ── Profile corner ──
-const PROFILE_PIC_BASE = 'https://raw.githubusercontent.com/SPGo5/Go5/main/Profile%20Pix/';
-function updateProfileCorner() {
-  const corner = document.getElementById('profile-corner');
-  const img = document.getElementById('profile-corner-img');
-  const code = document.getElementById('profile-corner-code');
-  if (!corner) return;
-  if (!currentUser) { corner.style.display = 'none'; return; }
-  corner.style.display = 'flex';
-  if (img) {
-    img.src = PROFILE_PIC_BASE + encodeURIComponent(currentUser) + '-Profile-Pic-R.png';
-    img.style.display = 'block';
-  }
-  if (code) code.textContent = currentUser;
-}
-
 // ── Logout ──
 function doLogout() {
   try { localStorage.removeItem('go_saved_user'); } catch(e) {}
