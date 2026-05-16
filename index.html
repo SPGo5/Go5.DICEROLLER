@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="https://i.postimg.cc/h47Dc2Vg/Dice-Roller-logo-glow-green.png">
   <link rel="apple-touch-icon" href="https://i.postimg.cc/h47Dc2Vg/Dice-Roller-logo-glow-green.png">
   <title>🎲 Dice Roller · Divination (i) Tsutsuji</title>
+  <link rel="stylesheet" href="https://spgo5.github.io/Go5.SHARED/spgo-core.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Beau+Rivage&family=Klee+One&family=Corinthia&family=Aleo:wght@300;400;700&display=swap" rel="stylesheet">
 
@@ -1948,7 +1949,7 @@ async function rollDice() {
           <img src="${imgSrc}" style="width:26px;height:26px;object-fit:contain;">
           <span style="font-family:'Cinzel',serif;font-size:12px;color:var(--sky);">${i + 1}</span>
         </span>
-        <span style="flex:1;font-family:'Beau Rivage',cursive;font-size:18px;color:#ffffff;font-style:italic;">${diceReps[i]}</span>
+        <span style="flex:1;font-family:'Corinthia',cursive;font-size:26px;color:#ffffff;font-style:normal;">${diceReps[i]}</span>
         <span style="display:flex;align-items:center;justify-content:flex-end;min-width:80px;">
           ${marker ? `<span style="font-size:18px;margin-right:4px;">${marker}</span>` : ''}
           <span style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:${numColor};text-align:right;">${results[i]}</span>
@@ -2150,7 +2151,7 @@ function copyDiceResult() {
     r.querySelectorAll('span').forEach(s => {
       const ff = s.style.fontFamily || '';
       const col = s.style.color || '';
-      if (ff.includes('Beau Rivage')) rep = s.textContent.trim();
+      if (ff.includes('Corinthia')) rep = s.textContent.trim();
       if (col.includes('204, 255, 0') || col === '#ccff00' || col.includes('183,183,183') || col === '#b7b7b7' || col.includes('183, 183, 183')) val = s.textContent.trim();
     });
     // Also check for emoji marker spans
