@@ -18,8 +18,7 @@
   <meta property="og:description" content="QMDJ Divine Wisdom Sourcing — Dice Roller">
   <meta property="og:image" content="https://i.postimg.cc/2Sw1KPTF/2_d6.png">
 
-  <link rel="stylesheet" href="https://spgo5.github.io/Go5.SHARED/spgo-core.css">
-<style>
+  <style>
 
 /* Global touch feedback — every button gets a press feel */
 button:active, a.card:active, [onclick]:active {
@@ -28,9 +27,55 @@ button:active, a.card:active, [onclick]:active {
   transition: opacity 0.08s, transform 0.08s !important;
 }
 
+/* Profile pic top-right */
+#profile-corner {
+  position: fixed;
+  top: 12px;
+  right: 14px;
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+#profile-corner img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(0,191,255,0.5);
+  box-shadow: 0 0 10px rgba(0,191,255,0.3);
+}
+#profile-corner-code {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(0,191,255,0.7);
+  margin-top: 3px;
+  max-width: 50px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-
-
+/* Logout popup */
+#logout-popup {
+  position: fixed;
+  top: 60px;
+  right: 10px;
+  z-index: 9999;
+  background: rgba(0,0,60,0.97);
+  border: 1px solid rgba(0,191,255,0.35);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  min-width: 160px;
+}
 #logout-popup button {
   background: none;
   border: 1px solid rgba(255,80,80,0.5);
@@ -846,9 +891,29 @@ html, body {
   align-items: center;
   gap: 10px;
 }
-.die-rep-num {
+.dice-count-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,191,255,0.4);
+  background: rgba(0,0,60,0.6);
+  color: rgba(0,191,255,0.8);
   font-family: 'Cinzel', serif;
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.dice-count-btn.selected {
+  background: rgba(0,191,255,0.2);
+  border-color: var(--sky);
+  color: var(--sky);
+  box-shadow: 0 0 10px rgba(0,191,255,0.3);
+}
+
+.die-rep-num {
+  font-family: 'Corinthia', cursive;
+  font-size: 22px;
   color: var(--sky);
   min-width: 50px;
 }
@@ -1375,44 +1440,12 @@ html, body {
 <body>
 
 <!-- Profile corner (same as main portal) -->
-<!-- Profile pic corner -->
-<div id="profile-corner" onclick="toggleLogoutPopup()">
-  <img id="profile-corner-img" src="" alt="">
-  <div id="profile-corner-code"></div>
+<div id="profile-corner" onclick="toggleLogoutPopup()" style="display:none; position:fixed; top:12px; right:14px; z-index:9999; flex-direction:column; align-items:center; cursor:pointer;">
+  <img id="profile-corner-img" src="" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,191,255,0.5);">
+  <div id="profile-corner-code" style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.08em;color:rgba(0,191,255,0.7);margin-top:3px;max-width:50px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
 </div>
-<div id="logout-popup">
-  <button onclick="showProfilePicUploader()" style="background:none;border:1px solid rgba(0,191,255,0.4);color:rgba(0,191,255,0.85);font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.08em;padding:10px 14px;border-radius:8px;cursor:pointer;text-align:left;">👤 Change profile pic</button>
-  <button onclick="useDefaultProfilePic()" style="background:none;border:1px solid rgba(0,191,255,0.3);color:rgba(0,191,255,0.65);font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.08em;padding:10px 14px;border-radius:8px;cursor:pointer;text-align:left;">👤 Use default profile pic</button>
-  <button onclick="doLogout()">⟵ Log out</button>
-</div>
-
-<!-- Profile Pic Uploader Modal -->
-<div id="profile-pic-modal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,40,0.92); flex-direction:column; align-items:center; justify-content:center; padding:24px;">
-  <div style="background:#000073; border:1px solid rgba(0,191,255,0.3); border-radius:16px; padding:24px; width:100%; max-width:380px; display:flex; flex-direction:column; align-items:center; gap:16px;">
-    <div style="font-family:'Cinzel',serif; font-size:14px; color:#00BFFF; letter-spacing:0.12em;">Change Profile Pic</div>
-    <div style="font-family:'Crimson Pro',serif; font-size:12px; font-style:italic; color:rgba(255,100,100,0.8); text-align:center;">Replacing this photo permanently deletes it. There's no profile album like Facebook.</div>
-    <div id="ppu-step1" style="width:100%; display:flex; flex-direction:column; align-items:center; gap:12px;">
-      <label style="width:100%; padding:14px; background:rgba(0,191,255,0.1); border:1px dashed rgba(0,191,255,0.4); border-radius:10px; text-align:center; cursor:pointer; font-family:'Crimson Pro',serif; font-size:14px; color:#00BFFF;">
-        📁 Pick a photo
-        <input type="file" accept="image/*" id="ppu-file-input" style="display:none;" onchange="ppuFileChosen(this)">
-      </label>
-    </div>
-    <div id="ppu-step2" style="display:none; width:100%; flex-direction:column; align-items:center; gap:12px;">
-      <div style="font-family:'Crimson Pro',serif; font-size:12px; color:rgba(255,255,255,0.6); text-align:center;">Drag to reposition · Pinch or scroll to zoom</div>
-      <div style="font-family:'Crimson Pro',serif; font-size:11px; color:rgba(204,255,0,0.6); text-align:center; font-style:italic; margin-top:-6px;">Tap the circle to pick a different photo</div>
-      <div id="ppu-crop-wrap" style="position:relative; width:260px; height:260px; border-radius:50%; overflow:hidden; border:3px solid rgba(204,255,0,0.8); cursor:grab; touch-action:none; flex-shrink:0;" ondblclick="document.getElementById('ppu-file-input').click()">
-        <img id="ppu-img" style="position:absolute; transform-origin:top left;" draggable="false">
-      </div>
-      <div style="display:flex; gap:10px; width:100%;">
-        <button onclick="ppuZoom(-0.1)" style="flex:1; padding:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:white; border-radius:8px; font-size:18px; cursor:pointer;">−</button>
-        <button onclick="ppuZoom(0.1)" style="flex:1; padding:10px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:white; border-radius:8px; font-size:18px; cursor:pointer;">+</button>
-      </div>
-      <button id="ppu-fit-btn" onclick="ppuFitObject()" style="width:100%; padding:10px; background:rgba(204,255,0,0.12); border:1px solid rgba(204,255,0,0.5); color:#ccff00; border-radius:8px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; cursor:pointer;">⊡ Fit object inside circle</button>
-      <button onclick="ppuUpload()" id="ppu-upload-btn" style="width:100%; padding:14px; background:#00BFFF; color:#000073; font-family:'Cinzel',serif; font-size:13px; font-weight:700; border:none; border-radius:10px; cursor:pointer; letter-spacing:0.1em;">Save & Upload</button>
-      <div id="ppu-status" style="font-family:'Crimson Pro',serif; font-size:13px; color:rgba(255,255,255,0.7); font-style:italic; text-align:center; min-height:20px;"></div>
-    </div>
-    <button onclick="closePpuModal()" style="background:none; border:none; color:rgba(255,255,255,0.4); font-family:'Cinzel',serif; font-size:11px; cursor:pointer; letter-spacing:0.1em;">✕ Cancel</button>
-  </div>
+<div id="logout-popup" style="display:none; position:fixed; top:60px; right:10px; z-index:9999; background:rgba(0,0,60,0.97); border:1px solid rgba(0,191,255,0.35); border-radius:12px; padding:14px 18px; flex-direction:column; gap:10px; box-shadow:0 8px 24px rgba(0,0,0,0.5); min-width:160px;">
+  <button onclick="doLogout()" style="background:none;border:1px solid rgba(255,80,80,0.5);color:rgba(255,150,150,0.9);font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.1em;padding:10px 14px;border-radius:8px;cursor:pointer;">⟵ Log out</button>
 </div>
 
 <!-- LOGIN SCREEN -->
@@ -1439,19 +1472,16 @@ html, body {
 <!-- SETUP SECTION -->
   <div id="dice-setup-section" class="dice-setup">
 
-    <div class="dice-question" style="text-align:center; font-size:14px; margin-bottom:4px;">How many dice?</div>
-    <div class="dropdown-wrap">
-      <select id="dice-count" style="font-family:'Courier New',monospace; font-size:14px;">
-        <option value="1">1 die     🎲</option>
-        <option value="2">2 dice   🎲🎲</option>
-        <option value="3">3 dice   🎲🎲🎲</option>
-        <option value="4" selected>4 dice   🎲🎲🎲🎲</option>
-        <option value="5">5 dice   🎲🎲🎲🎲🎲</option>
-        <option value="6">6 dice   🎲🎲🎲🎲🎲🎲</option>
-        <option value="7">7 dice   🎲🎲🎲🎲🎲🎲🎲</option>
-        <option value="8">8 dice   🎲🎲🎲🎲🎲🎲🎲🎲</option>
-      </select>
-      <span class="chevron">▾</span>
+    <div class="dice-question" style="text-align:center; font-size:14px; margin-bottom:8px;">How many dice?</div>
+    <div id="dice-count-btns" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; width:100%; max-width:420px; margin-bottom:4px;">
+      <button class="dice-count-btn selected" data-val="1" onclick="selectDiceCount(1)">1</button>
+      <button class="dice-count-btn" data-val="2" onclick="selectDiceCount(2)">2</button>
+      <button class="dice-count-btn" data-val="3" onclick="selectDiceCount(3)">3</button>
+      <button class="dice-count-btn" data-val="4" onclick="selectDiceCount(4)">4</button>
+      <button class="dice-count-btn" data-val="5" onclick="selectDiceCount(5)">5</button>
+      <button class="dice-count-btn" data-val="6" onclick="selectDiceCount(6)">6</button>
+      <button class="dice-count-btn" data-val="7" onclick="selectDiceCount(7)">7</button>
+      <button class="dice-count-btn" data-val="8" onclick="selectDiceCount(8)">8</button>
     </div>
 
     <div class="dice-question" style="text-align:center; font-size:14px; margin-top:8px; margin-bottom:12px;">Die type?</div>
@@ -1550,9 +1580,17 @@ html, body {
   </div>
 </div>
 
-<script src="https://spgo5.github.io/Go5.SHARED/spgo-core.js"></script>
 <script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzA4RwYNLcv60HWAHOh2gQgeCfuOWAb0kyqP7BaiujKI5hylDQKEc4Cu6QtTs77PA7FnQ/exec';
+const GOOGLE_CLIENT_ID = '427989206862-svhf1cote22nhdhkq68ff14446upp2m4.apps.googleusercontent.com';
 
+let currentUser = null;
+let currentUserName = 'Guest';
+let currentFsSubscriber = false;
+let currentHasPortal = false;
+let currentHasBara = false;
+let currentTier = 0;
+let isGuest = false;
 
 // ── Screen navigation ──
 function goTo(screenId) {
@@ -1701,7 +1739,20 @@ function setHomeState() {
 }
 
 // ── Profile corner ──
-
+const PROFILE_PIC_BASE = 'https://raw.githubusercontent.com/SPGo5/Go5/main/Profile%20Pix/';
+function updateProfileCorner() {
+  const corner = document.getElementById('profile-corner');
+  const img = document.getElementById('profile-corner-img');
+  const code = document.getElementById('profile-corner-code');
+  if (!corner) return;
+  if (!currentUser) { corner.style.display = 'none'; return; }
+  corner.style.display = 'flex';
+  if (img) {
+    img.src = PROFILE_PIC_BASE + encodeURIComponent(currentUser) + '-Profile-Pic-R.png';
+    img.style.display = 'block';
+  }
+  if (code) code.textContent = currentUser;
+}
 
 // ── Logout ──
 function doLogout() {
@@ -1723,8 +1774,16 @@ function toggleLogoutPopup() {
 
 // ── Dice functionality ──
 let diceReps = [];
+let selectedDiceCount = 1;
 let selectedDieType = 6;
 let selectedDiceSrc = 'quantum';
+
+function selectDiceCount(n) {
+  selectedDiceCount = n;
+  document.querySelectorAll('.dice-count-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.val) === n);
+  });
+}
 const DIE_IMGS = {
   6:  'https://i.postimg.cc/sXZ0jFn4/d6_yellow_nh%C5%A9_1.png',
   8:  'https://i.postimg.cc/W3JfNR9G/d8_white_3.png',
@@ -1755,8 +1814,10 @@ function resetDiceToSetup() {
   document.querySelectorAll('.dice-src-opt').forEach(el => {
     el.classList.toggle('selected', el.dataset.val === 'quantum');
   });
-  const countSel = document.getElementById('dice-count');
-  if (countSel) countSel.value = '4';
+  selectedDiceCount = 1;
+  document.querySelectorAll('.dice-count-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.val === '1');
+  });
   const setup = document.getElementById('dice-setup-section');
   if (setup) setup.style.display = 'flex';
   const rep = document.getElementById('dice-rep-section');
@@ -1769,7 +1830,7 @@ function resetDiceToSetup() {
 }
 
 function setupDiceReps() {
-  const count = parseInt(document.getElementById('dice-count').value);
+  const count = selectedDiceCount;
   const type = selectedDieType;
   const src = selectedDiceSrc;
   diceSetup = { count, type, src };
@@ -1840,7 +1901,7 @@ async function rollDice() {
     die.className = 'die-anim';
     die.style.cssText = 'background:transparent;box-shadow:none;position:relative;width:64px;height:64px;display:flex;align-items:center;justify-content:center;';
     die.style.animationDelay = (i * 0.07) + 's';
-    die.innerHTML = `<img src="${imgSrc}" style="width:52px;height:52px;object-fit:contain;position:absolute;"><span style="position:relative;font-size:18px;font-weight:700;color:#ccff00;text-shadow:0 0 8px #ccff00;">${Math.floor(Math.random() * type) + 1}</span>`;
+    die.innerHTML = `<span style="position:relative;font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:#ccff00;text-shadow:0 0 8px #ccff00;">${Math.floor(Math.random() * type) + 1}</span>`;
     rollRow.appendChild(die);
   }
   const rollWrap = document.getElementById('dice-rolling-wrap');
@@ -1912,73 +1973,51 @@ async function rollDice() {
 }
 
 function copyDiceResultImage() {
-  const rows = document.getElementById('dice-result-rows');
+  const resSection = document.getElementById('dice-result-section');
+  const rawResults = resSection._results || [];
   const now = new Date();
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const dt = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
     + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 
-  const results = [];
-  rows.querySelectorAll('.dice-result-row').forEach((r, idx) => {
-    let rep = '', val = '', marker = '';
-    r.querySelectorAll('span').forEach(s => {
-      const ff = s.style.fontFamily || '', col = s.style.color || '';
-      if (ff.includes('Beau Rivage') || ff.includes('Corinthia')) rep = s.textContent.trim();
-      if (col.includes('204, 255, 0') || col === '#ccff00' || col.includes('183,183,183') || col === '#b7b7b7') val = s.textContent.trim();
-      if (col.includes('204, 255, 0') || col === '#ccff00') marker = 'top';
-    });
-    // Re-read color for the number span
-    r.querySelectorAll('span').forEach(s => {
-      const col = s.style.color || '';
-      const t = s.textContent.trim();
-      if (t === '\u2728' || t === '\u2b50') marker = t;
-    });
-    results.push({ idx: idx + 1, rep, val, marker });
+  const dieType = diceSetup && diceSetup.type ? diceSetup.type : 6;
+  const results = rawResults.map((val, i) => {
+    const isTop = val === dieType;
+    const isNearTop = val === dieType - 1;
+    const marker = isTop ? '\u2728' : isNearTop ? '\u2b50' : '';
+    return { idx: i + 1, rep: diceReps[i] || '(unnamed)', val, marker };
   });
 
-  const DIE_IMGS_MAP = {
-    6:  'https://i.postimg.cc/2Sw1KPTF/2_d6.png',
-    8:  'https://i.postimg.cc/W3JfNR9G/d8_white_3.png',
-    10: 'https://i.postimg.cc/fbnzz5LY/d10_Blue_solid_1.png'
-  };
-  const dieType = diceSetup && diceSetup.type ? diceSetup.type : 6;
-  const diceImgUrl = DIE_IMGS_MAP[dieType] || DIE_IMGS_MAP[6];
   const tsutsujiUrl = 'https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png';
-  const profileUrl = currentUser ? ('https://raw.githubusercontent.com/SPGo5/Go5/main/Profile%20Pix/' + encodeURIComponent(currentUser) + '-Profile-Pic-R.png') : null;
   const descText = ((document.getElementById('dice-description') || {}).value || '').trim();
 
-  // === 2x scale for sharpness, same width as screen ===
   const SCALE = 2;
-  const SW = 420;
-  const W = SW * SCALE;
+  const W = 420 * SCALE;
+  function px(n) { return Math.round(n * SCALE); }
 
   // Pre-measure description height
   const tmpC = document.createElement('canvas'); tmpC.width = W;
   const tmpCtx = tmpC.getContext('2d');
-  const descFont = Math.round(26 * SCALE) + 'px Corinthia, cursive';
-  const descLineH = Math.round(34 * SCALE);
+  const descFont = px(26) + 'px Corinthia, cursive';
+  const descLineH = px(34);
   let descH = 0;
   if (descText) {
     tmpCtx.font = descFont;
     const dWords = descText.split(' '); let dLine = '', dLines = 1;
-    const dMaxW = W - 2 * Math.round(24 * SCALE);
+    const dMaxW = W - 2 * px(24);
     for (let i = 0; i < dWords.length; i++) {
       const t = dLine + dWords[i] + ' ';
       if (tmpCtx.measureText(t).width > dMaxW && i > 0) { dLine = dWords[i] + ' '; dLines++; } else dLine = t;
     }
-    descH = dLines * descLineH + Math.round(16 * SCALE);
+    descH = dLines * descLineH + px(16);
   }
 
-  // Layout (all in canvas pixels = screen px * SCALE)
-  function px(n) { return Math.round(n * SCALE); }
   const titleY    = px(80);
   const subtitleY = px(104);
   const descStartY = descText ? px(128) : 0;
-  const diceImgTop = descText ? (descStartY + descH) : px(118);
-  const diceImgH   = px(72);
-  const dateY      = diceImgTop + diceImgH + px(22);
+  const dateY      = (descText ? descStartY + descH : px(118)) + px(22);
   const dividerY   = dateY + px(18);
-  const rowH       = px(54);
+  const rowH       = px(70);
   const rowsTop    = dividerY + px(12);
   const flowerY    = rowsTop + results.length * rowH + px(24);
   const footerY    = flowerY + px(54);
@@ -1988,21 +2027,15 @@ function copyDiceResultImage() {
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  // Background
   const bg = ctx.createLinearGradient(0,0,0,H);
   bg.addColorStop(0,'#000073'); bg.addColorStop(1,'#00004a');
   ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
 
-  let diceImg=null, tsutsujiImg=null, profileImg=null;
-  const totalToLoad = profileUrl ? 3 : 2;
-  let loaded = 0;
-  function onLoaded() { loaded++; if (loaded >= totalToLoad) draw(); }
-
-  function draw() {
+  function draw(tsutsujiImg, profileImg) {
     const mid = W / 2;
 
     // Profile corner
-    const pR = px(25), pX = W - px(40), pY = px(46);
+    const pR = px(25), pX = W - px(46), pY = px(46);
     if (profileImg) {
       ctx.save(); ctx.beginPath(); ctx.arc(pX,pY,pR,0,Math.PI*2); ctx.clip();
       ctx.drawImage(profileImg, pX-pR, pY-pR, pR*2, pR*2); ctx.restore();
@@ -2010,9 +2043,9 @@ function copyDiceResultImage() {
       ctx.beginPath(); ctx.arc(pX,pY,pR+px(1),0,Math.PI*2); ctx.stroke();
     }
     if (currentUser) {
-      ctx.fillStyle='rgba(0,191,255,0.75)'; ctx.font='bold '+px(10)+'px serif'; ctx.textAlign='center';
+      ctx.fillStyle='rgba(0,191,255,0.75)'; ctx.font='bold '+px(10)+'px Cinzel, serif'; ctx.textAlign='center';
       ctx.fillText(currentUser, pX, pY+pR+px(14));
-      if (currentTier>0) { ctx.fillStyle='rgba(0,191,255,0.5)'; ctx.font=px(9)+'px serif'; ctx.fillText('Tier '+currentTier+(currentTier===1?' \uD83D\uDC8E':''), pX, pY+pR+px(25)); }
+      if (currentTier>0) { ctx.fillStyle='rgba(0,191,255,0.5)'; ctx.font=px(9)+'px Cinzel, serif'; ctx.fillText('Tier '+currentTier+(currentTier===1?' \uD83D\uDC8E':''), pX, pY+pR+px(25)); }
     }
 
     // Title
@@ -2021,10 +2054,9 @@ function copyDiceResultImage() {
     ctx.fillStyle='rgba(0,191,255,0.72)'; ctx.font=px(14)+'px Cinzel, serif';
     ctx.fillText('Dice Roller', mid, subtitleY);
 
-    // Description — Corinthia upright (no italic)
+    // Description
     if (descText) {
       ctx.fillStyle='#00E5FF'; ctx.font=descFont; ctx.textAlign='center';
-      // wrap centered
       const dMaxW = W - 2*px(24);
       const dWords = descText.split(' '); let dLine='', dY=descStartY+descLineH*0.8;
       for (let i=0; i<dWords.length; i++) {
@@ -2035,12 +2067,6 @@ function copyDiceResultImage() {
       ctx.fillText(dLine.trim(), mid, dY);
     }
 
-    // Dice image
-    if (diceImg) {
-      const dH=diceImgH, dW=diceImg.width*(dH/diceImg.height);
-      ctx.drawImage(diceImg, mid-dW/2, diceImgTop, dW, dH);
-    }
-
     // Date
     ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font=px(12)+'px Cinzel, serif'; ctx.textAlign='center';
     ctx.fillText(dt, mid, dateY);
@@ -2049,29 +2075,27 @@ function copyDiceResultImage() {
     ctx.strokeStyle='rgba(0,191,255,0.3)'; ctx.lineWidth=px(1);
     ctx.beginPath(); ctx.moveTo(px(30),dividerY); ctx.lineTo(W-px(30),dividerY); ctx.stroke();
 
-    // Result rows — exactly matching screen
+    // Result rows
     results.forEach((r,i) => {
       const y = rowsTop + i*rowH;
-      ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.02)';
+      ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0)';
       ctx.fillRect(px(20), y, W-px(40), rowH-px(2));
 
-      // Die index number
+      // Die index — Cinzel small sky
       ctx.fillStyle='rgba(0,191,255,0.8)'; ctx.font=px(12)+'px Cinzel, serif'; ctx.textAlign='left';
-      ctx.fillText(r.idx, px(34), y+rowH*0.62);
+      ctx.fillText(r.idx, px(34), y+rowH*0.55);
 
-      // Rep name — Corinthia upright (not italic)
-      ctx.fillStyle='#ffffff'; ctx.font=px(22)+'px Corinthia, cursive'; ctx.textAlign='left';
-      ctx.fillText(r.rep || '(unnamed)', px(60), y+rowH*0.65);
+      // Rep name — Beau Rivage matching screen
+      ctx.fillStyle='#ffffff'; ctx.font=px(26)+'px Beau Rivage, cursive'; ctx.textAlign='left';
+      ctx.fillText(r.rep, px(58), y+rowH*0.68);
 
-      // Value + marker right-aligned
-      // Determine color from results data
-      const isTop = r.marker === '\u2728' || r.marker === '\u2b50';
-      const numColor = isTop ? '#ccff00' : '#b7b7b7';
+      // Marker + value — Cormorant Garamond matching screen
+      const numColor = (r.marker === '\u2728' || r.marker === '\u2b50') ? '#ccff00' : '#b7b7b7';
       ctx.fillStyle = numColor;
-      ctx.font = 'bold '+px(28)+'px Cormorant Garamond, serif';
+      ctx.font = 'bold '+px(32)+'px Cormorant Garamond, serif';
       ctx.textAlign = 'right';
-      const markerStr = (r.marker === '\u2728' || r.marker === '\u2b50') ? r.marker+' ' : '';
-      ctx.fillText(markerStr + r.val, W-px(34), y+rowH*0.7);
+      const markerStr = r.marker ? r.marker+' ' : '';
+      ctx.fillText(markerStr + r.val, W-px(30), y+rowH*0.72);
     });
 
     // Tsutsuji flower
@@ -2084,19 +2108,27 @@ function copyDiceResultImage() {
     ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.font=px(11)+'px Cinzel, serif'; ctx.textAlign='center';
     ctx.fillText("You\u2019re using Super Portal \u4E94 Go", mid, footerY);
 
-    // Download
     const link = document.createElement('a');
     link.download = 'Dice-Roller-'+dt.replace(/[: ,]/g,'-')+'.png';
     link.href = canvas.toDataURL('image/png'); link.click();
   }
 
-  const di=new Image(); di.crossOrigin='anonymous';
-  di.onload=()=>{diceImg=di;onLoaded();}; di.onerror=()=>onLoaded(); di.src=diceImgUrl;
-  const ti=new Image(); ti.crossOrigin='anonymous';
-  ti.onload=()=>{tsutsujiImg=ti;onLoaded();}; ti.onerror=()=>onLoaded(); ti.src=tsutsujiUrl;
-  if (profileUrl) {
-    const pi=new Image(); pi.crossOrigin='anonymous';
-    pi.onload=()=>{profileImg=pi;onLoaded();}; pi.onerror=()=>onLoaded(); pi.src=profileUrl;
+  let tsutsujiImg = null, profileImg = null;
+  const profileDataUri = cachedProfilePicDataUri || null;
+  const toLoad = profileDataUri ? 2 : 1;
+  let loaded = 0;
+  function onLoaded() { loaded++; if (loaded >= toLoad) draw(tsutsujiImg, profileImg); }
+
+  const ti = new Image();
+  ti.onload = () => { tsutsujiImg = ti; onLoaded(); };
+  ti.onerror = () => onLoaded();
+  ti.src = tsutsujiUrl;
+
+  if (profileDataUri) {
+    const pi = new Image();
+    pi.onload = () => { profileImg = pi; onLoaded(); };
+    pi.onerror = () => onLoaded();
+    pi.src = profileDataUri;
   }
 }
 
@@ -2119,7 +2151,7 @@ function copyDiceResult() {
       const ff = s.style.fontFamily || '';
       const col = s.style.color || '';
       if (ff.includes('Beau Rivage')) rep = s.textContent.trim();
-      if (col.includes('204, 255, 0') || col === '#ccff00') val = s.textContent.trim();
+      if (col.includes('204, 255, 0') || col === '#ccff00' || col.includes('183,183,183') || col === '#b7b7b7' || col.includes('183, 183, 183')) val = s.textContent.trim();
     });
     // Also check for emoji marker spans
     r.querySelectorAll('span').forEach(s => {
