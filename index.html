@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="https://i.postimg.cc/h47Dc2Vg/Dice-Roller-logo-glow-green.png">
   <link rel="apple-touch-icon" href="https://i.postimg.cc/h47Dc2Vg/Dice-Roller-logo-glow-green.png">
   <title>🎲 Dice Roller · Divination (i) Tsutsuji</title>
+  <link rel="stylesheet" href="https://spgo5.github.io/Go5.SHARED/spgo-core.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Beau+Rivage&family=Klee+One&family=Corinthia&family=Aleo:wght@300;400;700&display=swap" rel="stylesheet">
 
@@ -892,22 +893,29 @@ html, body {
   gap: 10px;
 }
 .dice-count-btn {
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   border: 1px solid rgba(0,191,255,0.4);
   background: rgba(0,0,60,0.6);
   color: rgba(0,191,255,0.8);
-  font-family: 'Cinzel', serif; font-size: 15px; font-weight: 600;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
 }
 .dice-count-btn.selected {
-  background: rgba(0,191,255,0.2); border-color: var(--sky);
-  color: var(--sky); box-shadow: 0 0 10px rgba(0,191,255,0.3);
+  background: rgba(0,191,255,0.2);
+  border-color: var(--sky);
+  color: var(--sky);
+  box-shadow: 0 0 10px rgba(0,191,255,0.3);
 }
+
 .die-rep-num {
   font-family: 'Corinthia', cursive;
-  font-size: 26px;
-  color: #00E5FF;
-  font-style: normal;
+  font-size: 22px;
+  color: var(--sky);
   min-width: 50px;
 }
 .die-rep-input {
@@ -1259,32 +1267,6 @@ html, body {
 }
 
 /* ============================================================
-   FOOTER
-   ============================================================ */
-.portal-footer {
-  margin-top: 60px;
-  width: 100%;
-  max-width: 420px;
-  padding: 16px 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  text-align: center;
-}
-.footer-credit {
-  font-size: 11px;
-  color: rgba(255,255,255,0.25);
-  font-style: italic;
-  line-height: 1.8;
-}
-.footer-credit strong { color: rgba(0,191,255,0.5); font-style: normal; font-weight: 400; }
-.footer-copy {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.2);
-  margin-top: 4px;
-}
-
-/* ============================================================
    UTILITIES
    ============================================================ */
 .red-note { color: var(--red); font-size: 13px; text-align: center; margin-top: 8px; }
@@ -1492,7 +1474,7 @@ html, body {
   <div id="dice-setup-section" class="dice-setup">
 
     <div class="dice-question" style="text-align:center; font-size:14px; margin-bottom:8px;">How many dice?</div>
-    <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; width:100%; max-width:420px; margin-bottom:4px;">
+    <div id="dice-count-btns" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; width:100%; max-width:420px; margin-bottom:4px;">
       <button class="dice-count-btn selected" data-val="1" onclick="selectDiceCount(1)">1</button>
       <button class="dice-count-btn" data-val="2" onclick="selectDiceCount(2)">2</button>
       <button class="dice-count-btn" data-val="3" onclick="selectDiceCount(3)">3</button>
@@ -1574,9 +1556,9 @@ html, body {
     <div style="text-align:center; margin-bottom:12px;">
       <img src="https://i.postimg.cc/2Sw1KPTF/2_d6.png" alt="Dice" style="width:64px; height:64px; object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,191,255,0.4));">
     </div>
-    <!-- Description recap -->
-    <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; color:rgba(255,255,255,0.4); text-align:center; margin-bottom:8px; text-transform:uppercase;">Selection Criteria:</div>
-    <div id="dice-desc-display" style="display:none; font-family:'Corinthia',cursive; font-size:26px; color:#00E5FF; text-align:center; margin-bottom:6px; line-height:1.4; padding:0 8px; font-style:normal;"></div>
+    <!-- Setup summary — always shown -->
+    <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; color:rgba(255,255,255,0.4); text-align:center; margin-bottom:14px; text-transform:uppercase;">Selection Criteria:</div>
+    <div id="dice-desc-display" style="display:none; font-family:'Corinthia',cursive; font-size:26px; color:#00E5FF; text-align:center; margin-bottom:4px; line-height:1.4; padding:0 8px; font-style:normal;"></div>
     <div id="dice-desc-label" style="display:none; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.1em; color:rgba(255,255,255,0.45); text-align:center; margin-bottom:14px;">the Universe has answered:</div>
     <div id="dice-result-rows"></div>
 
@@ -1600,17 +1582,10 @@ html, body {
   </div>
 </div>
 
+<script src="https://spgo5.github.io/Go5.SHARED/spgo-core.js"></script>
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwnhEM3zfTLRof65C8KC3Nj4dtt8gACr0kwuzsWQHMls9VcY0aeP7Ba6F_Ntcecpf0QsQ/exec';
-const GOOGLE_CLIENT_ID = '427989206862-svhf1cote22nhdhkq68ff14446upp2m4.apps.googleusercontent.com';
-
-let currentUser = null;
-let currentUserName = 'Guest';
-let currentFsSubscriber = false;
-let currentHasPortal = false;
-let currentHasBara = false;
-let currentTier = 0;
-let isGuest = false;
+// GAS_URL, GOOGLE_CLIENT_ID, currentUser, currentUserName, currentFsSubscriber,
+// currentHasPortal, currentHasBara, currentTier, isGuest — all from spgo-core.js
 
 // ── Screen navigation ──
 function goTo(screenId) {
@@ -1662,7 +1637,7 @@ function gasJsonp(params, onSuccess, onError, timeoutMs) {
 function startGoogleLogin() {
   const el = document.getElementById('login-error-dice');
   if (el) el.style.display = 'none';
-  let redirectUri = window.location.origin + '/Go5.DiceRoller/index.html';
+  let redirectUri = window.location.origin + '/Go5.DICEROLLER/';
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
@@ -1759,21 +1734,6 @@ function setHomeState() {
 }
 
 // ── Profile corner ──
-const PROFILE_PIC_BASE = 'https://raw.githubusercontent.com/SPGo5/Go5/main/Profile%20Pix/';
-function updateProfileCorner() {
-  const corner = document.getElementById('profile-corner');
-  const img = document.getElementById('profile-corner-img');
-  const code = document.getElementById('profile-corner-code');
-  if (!corner) return;
-  if (!currentUser) { corner.style.display = 'none'; return; }
-  corner.style.display = 'flex';
-  if (img) {
-    img.src = PROFILE_PIC_BASE + encodeURIComponent(currentUser) + '-Profile-Pic-R.png';
-    img.style.display = 'block';
-  }
-  if (code) code.textContent = currentUser;
-}
-
 // ── Logout ──
 function doLogout() {
   try { localStorage.removeItem('go_saved_user'); } catch(e) {}
@@ -1805,6 +1765,12 @@ function selectDiceCount(n) {
     b.classList.toggle('selected', parseInt(b.dataset.val) === n);
   });
 }
+const DIE_IMGS = {
+  6:  'https://i.postimg.cc/sXZ0jFn4/d6_yellow_nh%C5%A9_1.png',
+  8:  'https://i.postimg.cc/W3JfNR9G/d8_white_3.png',
+  10: 'https://i.postimg.cc/fbnzz5LY/d10_Blue_solid_1.png'
+};
+const DICE_COLORS = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#1abc9c','#e91e63'];
 
 function selectDieType(val) {
   selectedDieType = val;
@@ -1821,17 +1787,17 @@ function selectDiceSrc(val) {
 }
 
 function resetDiceToSetup() {
-  selectedDiceCount = 1;
   selectedDieType = 6;
   selectedDiceSrc = 'quantum';
-  document.querySelectorAll('.dice-count-btn').forEach(b => {
-    b.classList.toggle('selected', b.dataset.val === '1');
-  });
   document.querySelectorAll('.die-type-opt').forEach(el => {
     el.classList.toggle('selected', el.dataset.val === '6');
   });
   document.querySelectorAll('.dice-src-opt').forEach(el => {
     el.classList.toggle('selected', el.dataset.val === 'quantum');
+  });
+  selectedDiceCount = 1;
+  document.querySelectorAll('.dice-count-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.val === '1');
   });
   const setup = document.getElementById('dice-setup-section');
   if (setup) setup.style.display = 'flex';
@@ -1985,104 +1951,171 @@ async function rollDice() {
   }
 
   resSection._results = results;
+
+  // Setup summary
+  const srcLabels = { quantum: 'Quantum', 'random-org': 'Atmospheric', crypto: 'Crypto' };
+  const summaryEl = document.getElementById('dice-result-summary');
+  if (summaryEl) summaryEl.textContent = diceSetup.count + ' × D' + diceSetup.type + ' · ' + (srcLabels[diceSetup.src] || diceSetup.src);
 }
 
 function copyDiceResultImage() {
   const resSection = document.getElementById('dice-result-section');
-  const rawResults = (resSection && resSection._results) ? resSection._results : [];
+  const rawResults = resSection._results || [];
   const now = new Date();
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const dt = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
     + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 
-  const dieType = diceSetup && diceSetup.type ? diceSetup.type : selectedDieType;
+  const dieType = diceSetup && diceSetup.type ? diceSetup.type : 6;
   const results = rawResults.map((val, i) => {
     const isTop = val === dieType;
     const isNearTop = val === dieType - 1;
     const marker = isTop ? '\u2728' : isNearTop ? '\u2b50' : '';
-    return { idx: i+1, rep: diceReps[i] || '(unnamed)', val, marker };
+    return { idx: i + 1, rep: diceReps[i] || '(unnamed)', val, marker };
   });
 
   const tsutsujiUrl = 'https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png';
   const descText = ((document.getElementById('dice-description') || {}).value || '').trim();
 
-  const SCALE = 2; const W = 420 * SCALE;
+  const SCALE = 2;
+  const W = 420 * SCALE;
   function px(n) { return Math.round(n * SCALE); }
 
+  // Pre-measure description height
   const tmpC = document.createElement('canvas'); tmpC.width = W;
   const tmpCtx = tmpC.getContext('2d');
-  const descFont = px(26)+'px Corinthia, cursive';
-  const descLineH = px(34); let descH = 0;
+  const descFont = px(26) + 'px Corinthia, cursive';
+  const descLineH = px(34);
+  let descH = 0;
   if (descText) {
     tmpCtx.font = descFont;
-    const dWords = descText.split(' '); let dLine='', dLines=1, dMaxW=W-2*px(24);
-    for (let i=0;i<dWords.length;i++) {
-      const t=dLine+dWords[i]+' ';
-      if (tmpCtx.measureText(t).width>dMaxW && i>0){dLine=dWords[i]+' ';dLines++;}else dLine=t;
+    const dWords = descText.split(' '); let dLine = '', dLines = 1;
+    const dMaxW = W - 2 * px(24);
+    for (let i = 0; i < dWords.length; i++) {
+      const t = dLine + dWords[i] + ' ';
+      if (tmpCtx.measureText(t).width > dMaxW && i > 0) { dLine = dWords[i] + ' '; dLines++; } else dLine = t;
     }
-    descH = dLines*descLineH+px(16);
+    descH = dLines * descLineH + px(16);
   }
 
-  const titleY=px(80), subtitleY=px(104);
-  const descStartY=descText?px(128):0;
-  const dateY=(descText?descStartY+descH:px(118))+px(22);
-  const dividerY=dateY+px(18), rowH=px(70);
-  const rowsTop=dividerY+px(12);
-  const flowerY=rowsTop+results.length*rowH+px(24);
-  const footerY=flowerY+px(54), H=footerY+px(24);
+  const titleY    = px(80);
+  const subtitleY = px(104);
+  const descStartY = descText ? px(128) : 0;
+  const dateY      = (descText ? descStartY + descH : px(118)) + px(22);
+  const dividerY   = dateY + px(18);
+  const rowH       = px(70);
+  const rowsTop    = dividerY + px(12);
+  const flowerY    = rowsTop + results.length * rowH + px(24);
+  const footerY    = flowerY + px(54);
+  const H          = footerY + px(24);
 
-  const canvas=document.createElement('canvas'); canvas.width=W; canvas.height=H;
-  const ctx=canvas.getContext('2d');
-  const bg=ctx.createLinearGradient(0,0,0,H);
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  const bg = ctx.createLinearGradient(0,0,0,H);
   bg.addColorStop(0,'#000073'); bg.addColorStop(1,'#00004a');
-  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
 
-  function draw(tsutsujiImg) {
-    const mid=W/2;
+  function draw(tsutsujiImg, profileImg) {
+    const mid = W / 2;
+
+    // Profile corner
+    const pR = px(25), pX = W - px(46), pY = px(46);
+    if (profileImg) {
+      ctx.save(); ctx.beginPath(); ctx.arc(pX,pY,pR,0,Math.PI*2); ctx.clip();
+      ctx.drawImage(profileImg, pX-pR, pY-pR, pR*2, pR*2); ctx.restore();
+      ctx.strokeStyle='rgba(0,191,255,0.6)'; ctx.lineWidth=px(1);
+      ctx.beginPath(); ctx.arc(pX,pY,pR+px(1),0,Math.PI*2); ctx.stroke();
+    }
+    if (currentUser) {
+      ctx.fillStyle='rgba(0,191,255,0.75)'; ctx.font='bold '+px(10)+'px Cinzel, serif'; ctx.textAlign='center';
+      ctx.fillText(currentUser, pX, pY+pR+px(14));
+      if (currentTier>0) { ctx.fillStyle='rgba(0,191,255,0.5)'; ctx.font=px(9)+'px Cinzel, serif'; ctx.fillText('Tier '+currentTier+(currentTier===1?' \uD83D\uDC8E':''), pX, pY+pR+px(25)); }
+    }
+
+    // Title
     ctx.fillStyle='rgba(255,255,255,0.88)'; ctx.font='bold '+px(18)+'px Cinzel, serif'; ctx.textAlign='center';
     ctx.fillText('Divination (i) Tsutsuji', mid, titleY);
     ctx.fillStyle='rgba(0,191,255,0.72)'; ctx.font=px(14)+'px Cinzel, serif';
     ctx.fillText('Dice Roller', mid, subtitleY);
+
+    // Description
     if (descText) {
       ctx.fillStyle='#00E5FF'; ctx.font=descFont; ctx.textAlign='center';
-      const dMaxW=W-2*px(24), dWords=descText.split(' '); let dLine='', dY=descStartY+descLineH*0.8;
-      for (let i=0;i<dWords.length;i++) {
-        const t=dLine+dWords[i]+' ';
-        if (ctx.measureText(t).width>dMaxW && i>0){ctx.fillText(dLine.trim(),mid,dY);dLine=dWords[i]+' ';dY+=descLineH;}else dLine=t;
+      const dMaxW = W - 2*px(24);
+      const dWords = descText.split(' '); let dLine='', dY=descStartY+descLineH*0.8;
+      for (let i=0; i<dWords.length; i++) {
+        const t = dLine+dWords[i]+' ';
+        if (ctx.measureText(t).width > dMaxW && i>0) { ctx.fillText(dLine.trim(), mid, dY); dLine=dWords[i]+' '; dY+=descLineH; }
+        else dLine=t;
       }
-      ctx.fillText(dLine.trim(),mid,dY);
+      ctx.fillText(dLine.trim(), mid, dY);
     }
+
+    // Date
     ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font=px(12)+'px Cinzel, serif'; ctx.textAlign='center';
     ctx.fillText(dt, mid, dateY);
+
+    // Divider
     ctx.strokeStyle='rgba(0,191,255,0.3)'; ctx.lineWidth=px(1);
     ctx.beginPath(); ctx.moveTo(px(30),dividerY); ctx.lineTo(W-px(30),dividerY); ctx.stroke();
 
+    // Result rows
     results.forEach((r,i) => {
-      const y=rowsTop+i*rowH;
-      ctx.fillStyle=i%2===0?'rgba(255,255,255,0.05)':'rgba(0,0,0,0)';
-      ctx.fillRect(px(20),y,W-px(40),rowH-px(2));
+      const y = rowsTop + i*rowH;
+      ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0)';
+      ctx.fillRect(px(20), y, W-px(40), rowH-px(2));
+
+      // Die index — Cinzel small sky
       ctx.fillStyle='rgba(0,191,255,0.8)'; ctx.font=px(12)+'px Cinzel, serif'; ctx.textAlign='left';
       ctx.fillText(r.idx, px(34), y+rowH*0.55);
+
+      // Rep name — Beau Rivage matching screen
       ctx.fillStyle='#00E5FF'; ctx.font=px(26)+'px Corinthia, cursive'; ctx.textAlign='left';
-      ctx.fillText(r.rep, px(58), y+rowH*0.72);
-      const numColor=(r.marker==='\u2728'||r.marker==='\u2b50')?'#ccff00':'#b7b7b7';
-      ctx.fillStyle=numColor; ctx.font='bold '+px(32)+'px Cormorant Garamond, serif'; ctx.textAlign='right';
-      ctx.fillText((r.marker?r.marker+' ':'')+r.val, W-px(30), y+rowH*0.72);
+      ctx.fillText(r.rep, px(58), y+rowH*0.68);
+
+      // Marker + value — Cormorant Garamond matching screen
+      const numColor = (r.marker === '\u2728' || r.marker === '\u2b50') ? '#ccff00' : '#b7b7b7';
+      ctx.fillStyle = numColor;
+      ctx.font = 'bold '+px(32)+'px Cormorant Garamond, serif';
+      ctx.textAlign = 'right';
+      const markerStr = r.marker ? r.marker+' ' : '';
+      ctx.fillText(markerStr + r.val, W-px(30), y+rowH*0.72);
     });
 
+    // Tsutsuji flower
     if (tsutsujiImg) {
       const tH=px(46), tW=tsutsujiImg.width*(tH/tsutsujiImg.height);
-      ctx.globalAlpha=0.85; ctx.drawImage(tsutsujiImg,mid-tW/2,flowerY,tW,tH); ctx.globalAlpha=1;
+      ctx.globalAlpha=0.85; ctx.drawImage(tsutsujiImg, mid-tW/2, flowerY, tW, tH); ctx.globalAlpha=1;
     }
+
+    // Footer
     ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.font=px(11)+'px Cinzel, serif'; ctx.textAlign='center';
     ctx.fillText("You\u2019re using Super Portal \u4E94 Go", mid, footerY);
-    const link=document.createElement('a');
-    link.download='Dice-Roller-'+dt.replace(/[: ,]/g,'-')+'.png';
-    link.href=canvas.toDataURL('image/png'); link.click();
+
+    const link = document.createElement('a');
+    link.download = 'Dice-Roller-'+dt.replace(/[: ,]/g,'-')+'.png';
+    link.href = canvas.toDataURL('image/png'); link.click();
   }
 
-  const ti=new Image();
-  ti.onload=()=>draw(ti); ti.onerror=()=>draw(null); ti.src=tsutsujiUrl;
+  let tsutsujiImg = null, profileImg = null;
+  const profileDataUri = cachedProfilePicDataUri || null;
+  const toLoad = profileDataUri ? 2 : 1;
+  let loaded = 0;
+  function onLoaded() { loaded++; if (loaded >= toLoad) draw(tsutsujiImg, profileImg); }
+
+  const ti = new Image();
+  ti.onload = () => { tsutsujiImg = ti; onLoaded(); };
+  ti.onerror = () => onLoaded();
+  ti.src = tsutsujiUrl;
+
+  if (profileDataUri) {
+    const pi = new Image();
+    pi.onload = () => { profileImg = pi; onLoaded(); };
+    pi.onerror = () => onLoaded();
+    pi.src = profileDataUri;
+  }
 }
 
 
@@ -2104,7 +2137,7 @@ function copyDiceResult() {
       const ff = s.style.fontFamily || '';
       const col = s.style.color || '';
       if (ff.includes('Corinthia')) rep = s.textContent.trim();
-      if (col.includes('204, 255, 0') || col === '#ccff00' || col.includes('183, 183, 183') || col === '#b7b7b7') val = s.textContent.trim();
+      if (col.includes('204, 255, 0') || col === '#ccff00' || col.includes('183,183,183') || col === '#b7b7b7' || col.includes('183, 183, 183')) val = s.textContent.trim();
     });
     // Also check for emoji marker spans
     r.querySelectorAll('span').forEach(s => {
